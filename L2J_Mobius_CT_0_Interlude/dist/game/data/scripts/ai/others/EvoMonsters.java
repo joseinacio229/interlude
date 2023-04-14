@@ -1,19 +1,3 @@
-/*
- * This file is part of the L2J Mobius project.
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
 package ai.others;
 
 import java.util.HashMap;
@@ -24,6 +8,7 @@ import org.l2jmobius.gameserver.model.actor.Attackable;
 import org.l2jmobius.gameserver.model.actor.Npc;
 import org.l2jmobius.gameserver.model.actor.Player;
 import org.l2jmobius.gameserver.network.serverpackets.ExShowScreenMessage;
+import org.l2jmobius.gameserver.network.serverpackets.SocialAction;
 
 import ai.AbstractNpcAI;
 
@@ -38,39 +23,44 @@ public class EvoMonsters extends AbstractNpcAI
 		ANGELSPAWNS.put(50001, 50002);
 		ANGELSPAWNS.put(50002, 50003);
 		ANGELSPAWNS.put(50003, 50004);
-		
 	}
+	private static final int LAST_MOB_ID = 50004; // ID do último monstro
 	
 	private EvoMonsters()
 	{
 		addKillId(ANGELSPAWNS.keySet());
+		addKillId(LAST_MOB_ID); // adiciona o último monstro à lista de monstros que devem ser mortos
 	}
 	
 	@Override
 	public String onKill(Npc npc, Player killer, boolean isSummon)
 	{
-		final Attackable newNpc = (Attackable) addSpawn(ANGELSPAWNS.get(npc.getId()), npc);
-		newNpc.setRunning();
-		
-		// Adiciona uma mensagem de morte para o monstro que acabou de morrer
-		if (npc.getId() == 50001)
+		if (npc.getId() == LAST_MOB_ID)
 		{
-			newNpc.broadcastPacket(new ExShowScreenMessage(Config.MOB_LEVEL_1_TXT, Config.MOB_LEVEL_TIME_1));
+			// O último monstro foi morto, aplicar efeito ao jogador
+			killer.broadcastPacket(new SocialAction(0, 3));
+			killer.sendPacket(new ExShowScreenMessage(Config.MOB_LEVEL_4_TXT, Config.MOB_LEVEL_TIME_4));
 		}
-		if (npc.getId() == 50002)
+		else
 		{
-			newNpc.broadcastPacket(new ExShowScreenMessage(Config.MOB_LEVEL_2_TXT, Config.MOB_LEVEL_TIME_2));
+			// Não é o último monstro, spawnar o próximo
+			final Attackable newNpc = (Attackable) addSpawn(ANGELSPAWNS.get(npc.getId()), npc);
+			newNpc.setRunning();
+			
+			// Adiciona uma mensagem de morte para o monstro que acabou de morrer
+			switch (npc.getId())
+			{
+				case 50001:
+					newNpc.broadcastPacket(new ExShowScreenMessage(Config.MOB_LEVEL_1_TXT, Config.MOB_LEVEL_TIME_1));
+					break;
+				case 50002:
+					newNpc.broadcastPacket(new ExShowScreenMessage(Config.MOB_LEVEL_2_TXT, Config.MOB_LEVEL_TIME_2));
+					break;
+				case 50003:
+					newNpc.broadcastPacket(new ExShowScreenMessage(Config.MOB_LEVEL_3_TXT, Config.MOB_LEVEL_TIME_3));
+					break;
+			}
 		}
-		if (npc.getId() == 50003)
-		{
-			newNpc.broadcastPacket(new ExShowScreenMessage(Config.MOB_LEVEL_3_TXT, Config.MOB_LEVEL_TIME_3));
-		}
-		if (npc.getId() == 50004)
-		{
-			newNpc.broadcastPacket(new ExShowScreenMessage(Config.MOB_LEVEL_4_TXT, Config.MOB_LEVEL_TIME_4));
-		}
-		// Aguarda 5 segundos para spawnar o próximo monstro
-		startQuestTimer("spawn_next_monster", Config.TIME_SPAWN_MOB_LEVELUP, newNpc, killer);
 		
 		return super.onKill(npc, killer, isSummon);
 	}
