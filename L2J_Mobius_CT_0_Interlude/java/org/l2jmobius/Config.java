@@ -1144,6 +1144,15 @@ public class Config
 	public static boolean WELCOME_MESSAGE_ENABLED;
 	public static String WELCOME_MESSAGE_TEXT;
 	public static int WELCOME_MESSAGE_TIME;
+	public static String MOB_LEVEL_1_TXT;
+	public static int MOB_LEVEL_TIME_1;
+	public static String MOB_LEVEL_2_TXT;
+	public static int MOB_LEVEL_TIME_2;
+	public static String MOB_LEVEL_3_TXT;
+	public static int MOB_LEVEL_TIME_3;
+	public static String MOB_LEVEL_4_TXT;
+	public static int MOB_LEVEL_TIME_4;
+	public static int TIME_SPAWN_MOB_LEVELUP;
 	public static boolean ANNOUNCE_PK_PVP;
 	public static boolean ANNOUNCE_PK_PVP_NORMAL_MESSAGE;
 	public static String ANNOUNCE_PK_MSG;
@@ -2992,6 +3001,17 @@ public class Config
 			WELCOME_MESSAGE_ENABLED = screenWelcomeMessageConfig.getBoolean("ScreenWelcomeMessageEnable", false);
 			WELCOME_MESSAGE_TEXT = screenWelcomeMessageConfig.getString("ScreenWelcomeMessageText", "Welcome to our server!");
 			WELCOME_MESSAGE_TIME = screenWelcomeMessageConfig.getInt("ScreenWelcomeMessageTime", 10) * 1000;
+			
+			TIME_SPAWN_MOB_LEVELUP = screenWelcomeMessageConfig.getInt("TIME_SPAWN_MOB_LEVELUP", 0);
+			
+			MOB_LEVEL_1_TXT = screenWelcomeMessageConfig.getString("MOB_LEVEL_1_TXT", "");
+			MOB_LEVEL_TIME_1 = screenWelcomeMessageConfig.getInt("MOB_LEVEL_TIME_1", 10) * 1000;
+			MOB_LEVEL_2_TXT = screenWelcomeMessageConfig.getString("MOB_LEVEL_2_TXT", "");
+			MOB_LEVEL_TIME_2 = screenWelcomeMessageConfig.getInt("MOB_LEVEL_TIME_2", 10) * 1000;
+			MOB_LEVEL_3_TXT = screenWelcomeMessageConfig.getString("MOB_LEVEL_3_TXT", "");
+			MOB_LEVEL_TIME_3 = screenWelcomeMessageConfig.getInt("MOB_LEVEL_TIME_3", 10) * 1000;
+			MOB_LEVEL_4_TXT = screenWelcomeMessageConfig.getString("MOB_LEVEL_4_TXT", "");
+			MOB_LEVEL_TIME_4 = screenWelcomeMessageConfig.getInt("MOB_LEVEL_TIME_4", 10) * 1000;
 			
 			// Load SellBuffs config file (if exists)
 			final PropertiesParser sellBuffConfig = new PropertiesParser(CUSTOM_SELL_BUFFS_CONFIG_FILE);
